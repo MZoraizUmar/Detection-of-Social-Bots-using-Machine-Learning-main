@@ -1,0 +1,221 @@
+<!-- Save this as templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Tweet Detector - Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f1f3f8;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .dark-mode {
+      background: #1e1e1e;
+      color: #f1f1f1;
+    }
+    .dark-mode .card, .dark-mode .table {
+      background-color: #2c2c2c;
+      color: #f1f1f1;
+    }
+    .card {
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease-in-out;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .navbar {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    }
+    .navbar .nav-link {
+      color: #fff !important;
+    }
+    .dashboard-section {
+      padding-top: 40px;
+    }
+    .stat-box {
+      text-align: center;
+      padding: 25px 15px;
+    }
+    .stat-icon {
+      font-size: 2rem;
+    }
+    .section-heading {
+      margin-top: 40px;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    .chart-wrapper {
+      max-width: 600px;
+      margin: auto;
+    }
+    footer {
+      background: #2c3e50;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">🤖 AI Tweet Detector</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="/services">Services</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/dashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/detector">Detector</a></li>
+      </ul>
+      <div class="form-check form-switch ms-4">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle" />
+        <label class="form-check-label text-white" for="darkModeToggle">🌙</label>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container dashboard-section">
+  <!-- Stats -->
+  <div class="row row-cols-1 row-cols-md-3 g-4 text-center">
+    <div class="col">
+      <div class="card stat-box">
+        <div class="stat-icon">👤</div>
+        <h4 class="card-title">Humans Detected</h4>
+        <p class="card-text fs-3">{{ humans_detected }}</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card stat-box">
+        <div class="stat-icon">🤖</div>
+        <h4 class="card-title">Bots Detected</h4>
+        <p class="card-text fs-3">{{ bots_detected }}</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card stat-box">
+        <div class="stat-icon">📊</div>
+        <h4 class="card-title">Total Tweets</h4>
+        <p class="card-text fs-3">{{ total_tweets }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accuracy Chart -->
+  <div class="section-heading text-center">📈 Model Accuracy</div>
+  <div class="chart-wrapper">
+    <canvas id="accuracyChart" height="100"></canvas>
+  </div>
+
+  <!-- Ratio Chart -->
+  <div class="section-heading text-center">🧠 Human vs Bot</div>
+  <div class="chart-wrapper">
+    <canvas id="ratioChart" height="100"></canvas>
+  </div>
+
+  <!-- Recent Detections -->
+  <div class="section-heading text-center">📋 Recent Detections</div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="table-primary">
+        <tr>
+          <th scope="col">Tweet ID</th>
+          <th scope="col">Prediction</th>
+          <th scope="col">Confidence</th>
+          <th scope="col">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in recent_detections %}
+        <tr>
+          <td>#{{ item.id }}</td>
+          <td>{{ item.prediction }}</td>
+          <td>{{ item.confidence }}%</td>
+          <td>{{ item.time }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    &copy; 2025 AI Tweet Detector. All rights reserved.
+  </div>
+</footer>
+
+<!-- Chart Scripts -->
+<script>
+  const toggle = document.getElementById('darkModeToggle');
+  const body = document.body;
+
+  if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+
+  new Chart(document.getElementById('accuracyChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Random Forest', 'BERT', 'LSTM', 'SVM', 'Naive Bayes'],
+      datasets: [{
+        label: 'Accuracy %',
+        data: [96, 94, 93, 90, 89],
+        backgroundColor: ['#6a11cb', '#3b7ddd', '#00cec9', '#ff7675', '#fdcb6e'],
+        borderRadius: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, max: 100 }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('ratioChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Humans', 'Bots'],
+      datasets: [{
+        data: [{{ humans_detected }}, {{ bots_detected }}],
+        backgroundColor: ['#27ae60', '#e74c3c']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' }
+      }
+    }
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tweet Detector | AI Tweet Detector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      background-color: #f0f2f5;
+      font-family: 'Poppins', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+    .dark-mode .card,
+    .dark-mode .info-chart,
+    .dark-mode .table,
+    .dark-mode .form-control,
+    .dark-mode .highlight-card {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+    }
+    .dark-mode .card-title,
+    .dark-mode .card-text,
+    .dark-mode .form-control::placeholder {
+      color: #ffffff !important;
+    }
+    .navbar {
+      background: linear-gradient(to right, #4b6cb7, #182848);
+    }
+    .form-section {
+      margin: 60px auto;
+      text-align: center;
+    }
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      border: none;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #eef2f7, #ffffff);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    .highlight-card {
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 6px 20px rgba(255, 117, 140, 0.3);
+      transform: scale(1.05);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 rgba(255, 117, 140, 0.5); }
+      70% { box-shadow: 0 0 20px rgba(255, 117, 140, 0.8); }
+      100% { box-shadow: 0 0 0 rgba(255, 117, 140, 0.5); }
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.95);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    .info-chart {
+      padding: 40px;
+      background-color: white;
+      border-radius: 15px;
+      margin-top: 50px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    footer {
+      background-color: #212529;
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+    }
+    .btn-export {
+      margin-top: 20px;
+    }
+    .icon-emoji {
+      font-size: 2.2rem;
+    }
+    .analysis-table {
+      margin-top: 40px;
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    .dark-mode .analysis-table {
+      background: #1e1e1e;
+    }
+    .dark-mode .form-control {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      border-color: #444;
+    }
+    .dark-mode .form-control::placeholder {
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">🤖 AI Tweet Detector</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('services') }}">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" href="{{ url_for('detector') }}">Detector</a></li>
+      </ul>
+      <div class="form-check form-switch ms-3">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label text-white" for="darkModeToggle">🌙</label>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container form-section">
+  <h2 class="fw-bold">Paste Tweet for Analysis</h2>
+  <p class="text-muted">Detect whether it's written by a bot or a human with cutting-edge AI</p>
+  <form method="POST" action="{{ url_for('detector') }}">
+    <div class="mb-3">
+      <textarea name="tweet" class="form-control" placeholder="Paste tweet here..." rows="3" required></textarea>
+    </div>
+    <button class="btn btn-primary btn-lg" type="submit">Analyze Tweet 🚀</button>
+  </form>
+</div>
+
+{% if prediction_results %}
+<div class="container">
+  <div class="row g-4">
+    {% for model, (label, confidence) in prediction_results.items() %}
+    <div class="col-md-4">
+      <div class="card p-4 text-center {% if model == '🚀 Final Decision' %}highlight-card{% endif %}">
+        <div class="card-body">
+          <h5 class="card-title">{{ model }}</h5>
+          <p class="card-text icon-emoji">{{ label }}</p>
+          <p class="card-text">Confidence: <strong>{{ confidence | round(2) }}%</strong></p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="info-chart mt-5">
+        <h5 class="text-center mb-3">📊 Feature Influence Radar</h5>
+        <canvas id="featureChart" height="220"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="analysis-table mt-5">
+        <h5 class="text-center mb-3">📋 Feature Breakdown</h5>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Value</th>
+              <th>Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Lexical Diversity</td><td>0.6</td><td>High</td></tr>
+            <tr><td>Hashtag Count</td><td>0.4</td><td>Medium</td></tr>
+            <tr><td>User Mentions</td><td>0.8</td><td>High</td></tr>
+            <tr><td>URL Count</td><td>0.2</td><td>Low</td></tr>
+            <tr><td>Posting Time</td><td>0.5</td><td>Medium</td></tr>
+            <tr><td>Follower Ratio</td><td>0.7</td><td>High</td></tr>
+          </tbody>
+        </table>
+        <div class="text-center">
+          <button class="btn btn-success btn-export" onclick="downloadPDF()">📄 Export Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const ctx = document.getElementById('featureChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Lexical Diversity', 'Hashtag Count', 'User Mentions', 'URL Count', 'Posting Time', 'Follower Ratio'],
+      datasets: [{
+        label: 'Tweet Analysis',
+        data: [0.6, 0.4, 0.8, 0.2, 0.5, 0.7],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        pointBackgroundColor: '#36A2EB'
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        r: {
+          angleLines: { display: false },
+          suggestedMin: 0,
+          suggestedMax: 1,
+          pointLabels: {
+            color: '#999'
+          },
+          grid: {
+            color: 'rgba(255,255,255,0.1)'
+          }
+        }
+      }
+    }
+  });
+
+  function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    pdf.text("AI Tweet Detection Report", 20, 20);
+    pdf.text("Lexical Diversity: 0.6", 20, 30);
+    pdf.text("Hashtag Count: 0.4", 20, 40);
+    pdf.text("User Mentions: 0.8", 20, 50);
+    pdf.text("URL Count: 0.2", 20, 60);
+    pdf.text("Posting Time: 0.5", 20, 70);
+    pdf.text("Follower Ratio: 0.7", 20, 80);
+    pdf.save("tweet_detection_report.pdf");
+  }
+</script>
+{% endif %}
+
+<footer class="mt-5">
+  <div class="container">
+    <p class="mb-0">© 2025 AI Tweet Detector. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const toggle = document.getElementById('darkModeToggle');
+  const body = document.body;
+  if (localStorage.getItem("theme") === "dark") {
+    body.classList.add("dark-mode");
+    toggle.checked = true;
+  }
+  toggle.addEventListener("change", () => {
+    if (toggle.checked) {
+      body.classList.add("dark-mode");
+      localStorage.setItem("theme", "dark");
+    } else {
+      body.classList.remove("dark-mode");
+      localStorage.setItem("theme", "light");
+    }
+  });
+</script>
+</body>
+</html>

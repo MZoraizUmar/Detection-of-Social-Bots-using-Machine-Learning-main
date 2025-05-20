@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Services | AI Tweet Detector</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f3f4f6;
+      font-family: 'Quicksand', sans-serif;
+      color: #2d3436;
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #ffffff;
+    }
+    .dark-mode .navbar {
+      background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+    }
+    .dark-mode .service-card,
+    .dark-mode .ai-solutions-section {
+      background: #1f1f1f;
+      color: #f1f1f1;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+    }
+    .navbar-brand {
+      font-weight: 700;
+    }
+    .section-title {
+      font-size: 2.4rem;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 50px;
+      margin-bottom: 40px;
+      color: inherit;
+    }
+    .service-card {
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 30px 20px;
+      text-align: center;
+      transition: 0.4s ease;
+      height: 100%;
+    }
+    .service-card:hover {
+      transform: translateY(-10px) scale(1.02);
+    }
+    .btn-detect {
+      background: linear-gradient(45deg, #00b894, #0984e3);
+      border: none;
+      padding: 12px 30px;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 30px;
+      color: white;
+      transition: 0.3s ease-in-out;
+    }
+    .btn-detect:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #6c5ce7, #00cec9);
+    }
+    .ai-solutions-section {
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 50px;
+      margin-top: 60px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    }
+    footer {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">🤖 AI Tweet Detector</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
+        <li class="nav-item"><a class="nav-link active" href="{{ url_for('services') }}">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('detector') }}">Detector</a></li>
+        <li class="nav-item">
+          <div class="form-check form-switch ms-3">
+            <input class="form-check-input" type="checkbox" id="darkModeToggle">
+            <label class="form-check-label text-white" for="darkModeToggle">🌙</label>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Services Cards -->
+<div class="container my-5">
+  <h2 class="section-title">🚀 Our Professional Services</h2>
+  <div class="row g-4 justify-content-center">
+    <div class="col-md-4 d-flex">
+      <div class="service-card w-100">
+        <h5>🤖 Tweet Bot Detection</h5>
+        <p>Detect if a tweet was posted by a bot or a human using deep learning models like BERT and LSTM.</p>
+      </div>
+    </div>
+    <div class="col-md-4 d-flex">
+      <div class="service-card w-100">
+        <h5>📊 Data Analysis</h5>
+        <p>Get insights on bot behavior, human engagement, and network trends using advanced visualizations.</p>
+      </div>
+    </div>
+    <div class="col-md-4 d-flex">
+      <div class="service-card w-100">
+        <h5>🧠 AI Model Consulting</h5>
+        <p>Integrate AI into your business with guidance on sentiment analysis, automation, and predictive modeling.</p>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mt-5">
+    <a href="{{ url_for('detector') }}" class="btn btn-detect">🚀 Start Detection</a>
+  </div>
+</div>
+
+<!-- AI Solutions Section -->
+<div class="container ai-solutions-section">
+  <h2 class="text-center section-title">🌟 Our AI Solutions</h2>
+  <p class="text-center mb-5">
+    At <strong>AI Tweet Detector</strong>, we harness AI to revolutionize businesses, automate systems, and unlock innovation.
+    Whether you're in healthcare, marketing, or tech — our AI capabilities help you scale intelligently.
+  </p>
+  <h4 class="fw-bold">💡 AI Solutions We Provide:</h4>
+  <ul class="mt-3">
+    <li><strong>Custom AI Models:</strong> NLP, Recommenders, Automation, and Forecasting.</li>
+    <li><strong>Deep Learning & Machine Learning:</strong> CNN, RNN, GANs, Transformers.</li>
+    <li><strong>Computer Vision:</strong> Image Analysis, Video Insights, Object Detection.</li>
+    <li><strong>Natural Language Processing:</strong> Chatbots, Translation, Summarization, Sentiment Analysis.</li>
+    <li><strong>AI Strategy Consulting:</strong> Roadmap Design, Audit, Implementation Support.</li>
+    <li><strong>Robotic Process Automation (RPA):</strong> Task Automation, OCR, Data Pipelines.</li>
+    <li><strong>Data Science Services:</strong> Real-Time Dashboards, Predictive Analytics, Visualization.</li>
+  </ul>
+  <h4 class="fw-bold mt-5">✅ Why Partner with Us?</h4>
+  <ul class="mt-3">
+    <li>🚀 End-to-End Custom AI Solutions</li>
+    <li>👨‍💻 Team of Researchers, Data Scientists, & Engineers</li>
+    <li>🛡 Secure, Scalable, and Ethical AI Practices</li>
+    <li>⚡ Fast Deployment & Continuous Support</li>
+    <li>🤝 Collaborative and Transparent Workflow</li>
+  </ul>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p class="mb-0">© 2025 AI Tweet Detector. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function toggleTheme() {
+    const body = document.body;
+    const isDark = body.classList.toggle("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const savedTheme = localStorage.getItem("theme");
+    const toggle = document.getElementById("darkModeToggle");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-mode");
+      toggle.checked = true;
+    }
+    toggle.addEventListener("change", toggleTheme);
+  });
+</script>
+</body>
+</html>
