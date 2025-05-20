@@ -127,7 +127,7 @@ Pooja Dhaduk
 Nushrat Jahan
 
 Muhammad Zoraiz Umar
-(University of Wollongong)
+
 
 📚 License
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -135,7 +135,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 🌟 Acknowledgements
 Thanks to University of Wollongong
 
-Special thanks to Supervisor: Partha Sarathi
+Special thanks to Supervisor: Dr. Partha Sarathi Roy
 
 Huggingface Transformers
 
